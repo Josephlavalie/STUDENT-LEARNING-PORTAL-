@@ -1,0 +1,156 @@
+# Student Learning Portal
+
+class Student:
+    # Class attribute1
+    total_students = 0
+
+    # Constructor
+    def __init__(self, name, student_id, course, mark):
+        self.name = name
+        self.student_id = student_id
+        self.course = course
+        self.mark = mark
+
+        Student.total_students += 1
+
+    # Instance method to display student information
+    def display_details(self):
+        print("\n----- STUDENT DETAILS -----")
+        print("Name:", self.name)
+        print("Student ID:", self.student_id)
+        print("Course:", self.course)
+        print("Mark:", self.mark)
+
+    # Instance method to check examination result
+    def check_result(self):
+        if self.mark >= 50:
+            print("Result: PASS")
+        else:
+            print("Result: FAIL")
+
+    # Class method to count student objects
+    @classmethod
+    def get_total_students(cls):
+        return cls.total_students
+
+
+class StudentPortal:
+
+    def __init__(self):
+        # List used to store student objects
+        self.students = []
+
+    # Method to register a student
+    def register_student(self):
+        print("\n----- REGISTER STUDENT -----")
+
+        name = input("Enter student name: ").strip()
+        student_id = input("Enter student ID: ").strip()
+        course = input("Enter course name: ").strip()
+
+        # Check that required fields are not empty
+        if not name or not student_id or not course:
+            print("All fields are required.")
+            return
+
+        # Prevent duplicate student IDs in this portal
+        for student in self.students:
+            if student.student_id == student_id:
+                print("This student ID is already registered.")
+                return
+
+        # Validate examination mark
+        while True:
+            try:
+                mark = float(
+                    input("Enter examination mark (0-100): ")
+                )
+
+                if 0 <= mark <= 100:
+                    break
+
+                print("Mark must be between 0 and 100.")
+
+            except ValueError:
+                print("Please enter a valid number.")
+
+        # Create a student object
+        student = Student(
+            name,
+            student_id,
+            course,
+            mark
+        )
+
+        # Store the object in the list
+        self.students.append(student)
+
+        print("Student registered successfully!")
+
+    # Method to display all students
+    def display_students(self):
+        if not self.students:
+            print("\nNo students registered yet.")
+            return
+
+        print("\n===== REGISTERED STUDENTS =====")
+
+        for student in self.students:
+            student.display_details()
+            student.check_result()
+
+        print(
+            "\nTotal registered students:",
+            len(self.students)
+        )
+
+    # Method to search for a student
+    def search_student(self):
+        student_id = input(
+            "Enter student ID to search: "
+        ).strip()
+
+        for student in self.students:
+            if student.student_id == student_id:
+                student.display_details()
+                student.check_result()
+                return
+
+        print("Student not found.")
+
+    # Method to display the main menu
+    def menu(self):
+        while True:
+            print("\n===== STUDENT LEARNING PORTAL =====")
+            print("1. Register Student")
+            print("2. View All Students")
+            print("3. Search Student")
+            print("4. Count Student Objects")
+            print("5. Exit")
+
+            choice = input("Choose an option: ").strip()
+
+            if choice == "1":
+                self.register_student()
+
+            elif choice == "2":
+                self.display_students()
+
+            elif choice == "3":
+                self.search_student()
+
+            elif choice == "4":
+                total = Student.get_total_students()
+                print("Student objects created:", total)
+
+            elif choice == "5":
+                print("Thank you for using the portal!")
+                break
+
+            else:
+                print("Invalid choice. Please try again.")
+
+
+# Main program
+portal = StudentPortal()
+portal.menu()
